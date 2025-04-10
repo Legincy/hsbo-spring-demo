@@ -1,0 +1,43 @@
+services:
+  app:
+    container_name: hsbo-spring-demo-app
+    networks:
+      - default
+    build: 
+      context: ./service/app
+      dockerfile: Dockerfile
+
+  db:
+    image: mongo:latest
+    container_name: hsbo-spring-demo-db
+    restart: unless-stopped
+    networks:
+      - default
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: hsbo-spring-demo-mosquitto
+    restart: unless-stopped
+    networks:
+      - default
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./data/mosquitto:/mosquitto
+
+  simulation-py:
+    container_name: hsbo-spring-demo-simulation-py
+    build:
+      context: ./service/simulation-py
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - MQTT_USERNAME=martin.peth@stud.hs-bochum.de
+      - MQTT_PASSWORD=018101006
+    networks:
+      - default
+    depends_on:
+      - mosquitto
+
+volumes:
+  mongodb-data:
