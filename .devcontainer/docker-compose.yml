@@ -10,7 +10,14 @@ services:
   db:
     image: mongo:latest
     container_name: hsbo-spring-demo-db
+    env_file:
+      - .env
+    ports:
+        - "27017:27017"
     restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
     networks:
       - default
 
@@ -31,9 +38,8 @@ services:
       context: ./service/simulation-py
       dockerfile: Dockerfile
     restart: unless-stopped
-    environment:
-      - MQTT_USERNAME=martin.peth@stud.hs-bochum.de
-      - MQTT_PASSWORD=018101006
+    env_file:
+      - .env
     networks:
       - default
     depends_on:

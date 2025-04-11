@@ -9,8 +9,6 @@ import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.stereotype.Component;
 import pl.peth.hsbo_spring_demo.config.MqttConfiguration;
 
-import java.util.UUID;
-
 @Component
 public class MqttConnectionFactory {
     private static final Logger log = LoggerFactory.getLogger(MqttConnectionFactory.class);
@@ -32,6 +30,10 @@ public class MqttConnectionFactory {
         options.setServerURIs(new String[]{brokerUrl});
         options.setCleanSession(true);
 
+        options.setAutomaticReconnect(true);
+        options.setKeepAliveInterval(30);
+        options.setConnectionTimeout(10);
+
         String username = mqttConfiguration.getUsername();
         String password = mqttConfiguration.getPassword();
         if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
@@ -43,17 +45,4 @@ public class MqttConnectionFactory {
         return factory;
     }
 
-    @Bean
-    public String getClientId(){
-        String clientId = mqttConfiguration.getClientId();
-
-        if (clientId == null || clientId.isEmpty()) {
-            clientId = "mqtt-client-" + UUID.randomUUID();
-        } else if (clientId.endsWith("-")) {
-            clientId = clientId + UUID.randomUUID();
-        }
-
-        return clientId;
-
-    }
 }
