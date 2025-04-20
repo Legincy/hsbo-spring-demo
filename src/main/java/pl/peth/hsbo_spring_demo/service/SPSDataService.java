@@ -18,12 +18,7 @@ public class SPSDataService {
     public SPSData save(SPSData spsData) {
         return spsDataRepository.save(spsData);
     }
-
-    public SPSData createAndSave(String source, String topic, String payload) {
-        SPSData spsData = new SPSData(source, topic, payload);
-        return save(spsData);
-    }
-
+    
     public SPSData findById(String id) {
         return spsDataRepository.findById(id).orElse(null);
     }

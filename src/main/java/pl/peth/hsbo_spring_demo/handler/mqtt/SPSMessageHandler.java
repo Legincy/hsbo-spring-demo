@@ -5,9 +5,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Component;
+import pl.peth.hsbo_spring_demo.model.S7_1500Data;
 import pl.peth.hsbo_spring_demo.model.SPSData;
+import pl.peth.hsbo_spring_demo.model.Wago750Data;
+import pl.peth.hsbo_spring_demo.service.S7_1500Service;
 import pl.peth.hsbo_spring_demo.service.SPSDataService;
+import pl.peth.hsbo_spring_demo.service.Wago750Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,16 +27,36 @@ public class SPSMessageHandler implements TopicSubscription {
     };
 
     private final SPSDataService spsDataService;
+    private final Wago750Service wago750Service;
+    private final S7_1500Service s7_1500DataService;
 
-    public SPSMessageHandler(SPSDataService spsDataService) {
+    public SPSMessageHandler(SPSDataService spsDataService, Wago750Service wago750Service, S7_1500Service s71500DataService) {
         this.spsDataService = spsDataService;
+        this.wago750Service = wago750Service;
+        s7_1500DataService = s71500DataService;
     }
 
     @Override
     public void handleMessage(String topic, String payload, Message<?> message) throws MessagingException {
         String source = extractSource(topic);
 
-        spsDataService.createAndSave(source, topic, payload);
+        SPSData spsData = new SPSData(source, topic, payload);
+        //spsDataService.save(spsData);
+
+        Map<String, String> payloadMap = new HashMap<>();
+        payloadMap.put(spsData.getKey(), spsData.getPayload());
+
+        switch (source){
+            case "Wago750" -> {
+                Wago750Data wago750Data = new Wago750Data(payloadMap);
+                wago750Service.save(wago750Data);
+            }
+            case "S7_1500" -> {
+                S7_1500Data s7_1500Data = new S7_1500Data(payloadMap);
+                s7_1500DataService.save(s7_1500Data);
+            }
+            default -> log.warn("Unknown source: {}", source);
+        }
     }
 
     @Override

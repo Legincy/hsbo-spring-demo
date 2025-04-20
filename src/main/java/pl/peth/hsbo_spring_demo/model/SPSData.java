@@ -9,7 +9,6 @@ import java.time.Instant;
 public class SPSData {
     @Id
     private String id;
-
     private String source;
     private String topic;
     private String payload;
