@@ -75,7 +75,7 @@ try:
         client.publish(f"{MQTT_TOPIC_BASE}/Differenz", json.dumps(data_diff))
         '''
 
-        if(not soll_temp_sent):
+        if(soll_temp_sent == False):
             client.publish(f"{MQTT_TOPIC_BASE}/Soll", json.dumps(data_soll))
             soll_temp_sent = True
 

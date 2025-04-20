@@ -11,6 +11,12 @@ services:
     image: mongo:latest
     container_name: hsbo-spring-demo-db
     restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./data/db:/data/db
+    ports:
+      - "27017:27017"
     networks:
       - default
 
