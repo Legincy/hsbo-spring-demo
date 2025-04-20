@@ -1,14 +1,13 @@
 package pl.peth.hsbo_spring_demo.config;
 
-public class MqttConfiguration {
+public class DatabaseConfiguration {
     private String host;
     private int port;
-    private int qualityOfService;
-    private String clientId;
+    private String database;
     private String username;
     private String password;
 
-    public MqttConfiguration() {}
+    public DatabaseConfiguration() {}
 
     public String getHost() {
         return host;
@@ -26,12 +25,12 @@ public class MqttConfiguration {
         this.port = port;
     }
 
-    public String getClientId() {
-        return clientId;
+    public String getDatabase() {
+        return database;
     }
 
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
+    public void setDatabase(String database) {
+        this.database = database;
     }
 
     public String getUsername() {
@@ -48,22 +47,5 @@ public class MqttConfiguration {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public int getQualityOfService() {
-        return qualityOfService;
-    }
-
-    public void setQualityOfService(int qualityOfService) {
-        this.qualityOfService = qualityOfService;
-    }
-
-    /**
-     * Returns the broker URL in the format "tcp://<host>:<port>".
-     *
-     * @return the broker URL
-     */
-    public String getBrokerUrl() {
-        return String.format("tcp://%s:%d", host, port);
     }
 }
