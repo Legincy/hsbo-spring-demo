@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.Instant;
 
 @Document(collection = "sps_data")
-public class SPSData {
+public class SPSDataModel {
     @Id
     private String id;
     private String source;
@@ -15,11 +15,11 @@ public class SPSData {
     private String key;
     private Instant timestamp;
 
-    public SPSData() {
+    public SPSDataModel() {
         this.timestamp = Instant.now();
     }
 
-    public SPSData(String source, String topic, String payload) {
+    public SPSDataModel(String source, String topic, String payload) {
         this();
         this.source = source;
         this.topic = topic;

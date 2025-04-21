@@ -1,7 +1,7 @@
 package pl.peth.hsbo_spring_demo.service;
 
 import org.springframework.stereotype.Service;
-import pl.peth.hsbo_spring_demo.model.SPSData;
+import pl.peth.hsbo_spring_demo.model.SPSDataModel;
 import pl.peth.hsbo_spring_demo.repository.SPSDataRepository;
 
 import java.time.Instant;
@@ -15,15 +15,15 @@ public class SPSDataService {
         this.spsDataRepository = spsDataRepository;
     }
 
-    public SPSData save(SPSData spsData) {
-        return spsDataRepository.save(spsData);
+    public SPSDataModel save(SPSDataModel spsDataModel) {
+        return spsDataRepository.save(spsDataModel);
     }
     
-    public SPSData findById(String id) {
+    public SPSDataModel findById(String id) {
         return spsDataRepository.findById(id).orElse(null);
     }
 
-    public List<SPSData> findByTimeRange(Instant start, Instant end) {
+    public List<SPSDataModel> findByTimeRange(Instant start, Instant end) {
         return spsDataRepository.findByTimestampBetween(start, end);
     }
 }
