@@ -7,6 +7,7 @@ public class MqttConfiguration {
     private String clientId;
     private String username;
     private String password;
+    private boolean ignoreRandomGenerator;
 
     public MqttConfiguration() {}
 
@@ -56,6 +57,14 @@ public class MqttConfiguration {
 
     public void setQualityOfService(int qualityOfService) {
         this.qualityOfService = qualityOfService;
+    }
+
+    public boolean isIgnoreRandomGenerator() {
+        return ignoreRandomGenerator;
+    }
+
+    public void setIgnoreRandomGenerator(boolean ignoreRandomGenerator) {
+        this.ignoreRandomGenerator = ignoreRandomGenerator;
     }
 
     /**

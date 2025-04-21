@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Component;
+import pl.peth.hsbo_spring_demo.config.MqttConfiguration;
 import pl.peth.hsbo_spring_demo.model.RandomModel;
 import pl.peth.hsbo_spring_demo.model.S7_1500Model;
 import pl.peth.hsbo_spring_demo.model.SPSDataModel;
@@ -33,12 +34,14 @@ public class SPSMessageHandler implements TopicSubscription {
     private final Wago750Service wago750Service;
     private final S7_1500Service s7_1500DataService;
     private final RandomService randomService;
+    private final MqttConfiguration mqttConfiguration;
 
-    public SPSMessageHandler(SPSDataService spsDataService, Wago750Service wago750Service, S7_1500Service s71500DataService, RandomService randomService) {
+    public SPSMessageHandler(SPSDataService spsDataService, Wago750Service wago750Service, S7_1500Service s71500DataService, RandomService randomService, MqttConfiguration mqttConfiguration) {
         this.spsDataService = spsDataService;
         this.wago750Service = wago750Service;
         s7_1500DataService = s71500DataService;
         this.randomService = randomService;
+        this.mqttConfiguration = mqttConfiguration;
     }
 
     @Override
@@ -62,6 +65,10 @@ public class SPSMessageHandler implements TopicSubscription {
                 s7_1500DataService.save(s7_1500Model);
             }
             case "Random" -> {
+                if (mqttConfiguration.isIgnoreRandomGenerator()) {
+                    return;
+                }
+
                 RandomModel randomModel = new RandomModel(payloadMap, key);
                 randomService.save(randomModel);
             }

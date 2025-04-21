@@ -23,5 +23,4 @@ public class AppConfig {
     public DatabaseConfiguration databaseConfig() {
         return new DatabaseConfiguration();
     }
-
 }
