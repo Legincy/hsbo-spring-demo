@@ -7,19 +7,25 @@ import java.time.Instant;
 import java.util.Map;
 
 @Document(collection = "wago750")
-public class Wago750Data {
+public class Wago750Model {
     @Id
     private String id;
     private Map<String, String> payload;
     private Instant timestamp;
+    private String key;
 
-    public Wago750Data() {
+    public Wago750Model() {
         this.timestamp = Instant.now();
     }
 
-    public Wago750Data(Map<String, String> payload) {
+    public Wago750Model(Map<String, String> payload) {
         this();
         this.payload = payload;
+    }
+
+    public Wago750Model(Map<String, String> payload, String key) {
+        this(payload);
+        this.key = key;
     }
 
     public String getId() {
@@ -44,6 +50,14 @@ public class Wago750Data {
 
     public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
 
