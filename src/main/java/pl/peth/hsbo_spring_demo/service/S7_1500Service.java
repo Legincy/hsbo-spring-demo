@@ -29,7 +29,11 @@ public class S7_1500Service {
     }
 
     public S7_1500Model findLatest(Optional<String> key) {
-        return s7_1500Repository.findFirstByOrderByTimestampDesc();
+        if (key.isEmpty()) {
+            s7_1500Repository.findFirstByOrderByTimestampDesc();
+        }
+
+        return s7_1500Repository.findFirstByKeyOrderByTimestampDesc(key.get());
     }
 
     public List<S7_1500Model> findByTimestampBetween(Instant startInstant, Instant endInstant) {

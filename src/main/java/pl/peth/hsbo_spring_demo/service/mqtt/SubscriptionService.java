@@ -11,7 +11,6 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 import pl.peth.hsbo_spring_demo.config.MqttConfiguration;
 import pl.peth.hsbo_spring_demo.handler.mqtt.TopicSubscription;
-import pl.peth.hsbo_spring_demo.service.MessageHandlerRegistry;
 
 import java.util.HashMap;
 import java.util.Map;

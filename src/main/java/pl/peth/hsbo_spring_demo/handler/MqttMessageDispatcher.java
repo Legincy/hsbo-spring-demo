@@ -7,7 +7,7 @@ import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Component;
 import pl.peth.hsbo_spring_demo.handler.mqtt.TopicSubscription;
-import pl.peth.hsbo_spring_demo.service.MessageHandlerRegistry;
+import pl.peth.hsbo_spring_demo.service.mqtt.MessageHandlerRegistry;
 
 import java.util.List;
 import java.util.Objects;

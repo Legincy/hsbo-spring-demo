@@ -1,4 +1,4 @@
-package pl.peth.hsbo_spring_demo.service;
+package pl.peth.hsbo_spring_demo.service.mqtt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

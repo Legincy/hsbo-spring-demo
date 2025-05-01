@@ -5,14 +5,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import pl.peth.hsbo_spring_demo.dto.MqttMessage;
 import pl.peth.hsbo_spring_demo.model.Wago750Model;
 import pl.peth.hsbo_spring_demo.service.SSEService;
+import pl.peth.hsbo_spring_demo.service.Wago750PublisherService;
 import pl.peth.hsbo_spring_demo.service.Wago750Service;
+import pl.peth.hsbo_spring_demo.service.mqtt.PublisherService;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -20,10 +24,14 @@ import java.util.Optional;
 public class Wago750Controller {
     private final Wago750Service wago750Service;
     private final SSEService sseService;
+    private final Wago750PublisherService publisherService;
+    private final Wago750PublisherService wago750PublisherService;
 
-    public Wago750Controller(Wago750Service wago750Service, SSEService sseService) {
+    public Wago750Controller(Wago750Service wago750Service, SSEService sseService, Wago750PublisherService publisherService, Wago750PublisherService wago750PublisherService) {
         this.wago750Service = wago750Service;
         this.sseService = sseService;
+        this.publisherService = publisherService;
+        this.wago750PublisherService = wago750PublisherService;
     }
 
     @GetMapping
@@ -50,10 +58,9 @@ public class Wago750Controller {
     }
 
     @PostMapping("/control")
-    public ResponseEntity<Void> postControl(@RequestBody Wago750Model data) {
-        //
-
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Map<String, Object>> postControl(@RequestBody MqttMessage body) {
+        Map<String, Object> result = wago750PublisherService.publish(body);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping(value = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface S7_1500Repository extends MongoRepository<S7_1500Model, String> {
     S7_1500Model findFirstByOrderByTimestampDesc();
+    S7_1500Model findFirstByKeyOrderByTimestampDesc(String key);
     List<S7_1500Model> findByTimestampBetween(Instant startInstant, Instant endInstant);
     List<S7_1500Model> findByTimestampGreaterThanEqualAndTimestampLessThanEqual(Instant timestampIsGreaterThan, Instant timestampIsLessThan);
     List<S7_1500Model> findByKeyAndTimestampBetween(String key, Instant start, Instant end);

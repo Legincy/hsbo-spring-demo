@@ -15,6 +15,7 @@ import pl.peth.hsbo_spring_demo.service.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,7 +24,7 @@ public class SPSMessageHandler implements TopicSubscription {
     private static final Logger log = LoggerFactory.getLogger(SPSMessageHandler.class);
     private static final Pattern SOURCE_PATTERN = Pattern.compile("^([^/]+)/.*");
     private static final String[] SUBSCRIPTIONS = {
-            "Wago750/Status",
+            "Wago750/+",
             "S7_1500/Temperatur/+",
             //"Random/+"
     };
@@ -51,24 +52,30 @@ public class SPSMessageHandler implements TopicSubscription {
         SPSDataModel spsDataModel = new SPSDataModel(source, topic, payload);
         //spsDataService.save(spsData);
 
-        String key = spsDataModel.getKey();
+        String key = spsDataModel.getKey().trim();
         Map<String, Object> payloadMap = new HashMap<>();
         payloadMap.put("key", key);
 
         switch (source){
             case "Wago750" -> {
-                String rawValue = spsDataModel.getPayload().replace("[", "").replace("]", "").trim();
-                int value = Integer.parseInt(rawValue);
+                if(key.equals("Control")){
+                    String rawValue = spsDataModel.getPayload().trim();
+                    int value = Integer.parseInt(rawValue);
+                    payloadMap.put("value", value);
+                }else if (key.equals("Status")) {
+                    String rawValue = spsDataModel.getPayload().replace("[", "").replace("]", "").trim();
+                    int value = Integer.parseInt(rawValue);
 
-                byte[] bytes = new byte[2];
-                bytes[0] = (byte) ((value >> 8) & 0xFF);
-                bytes[1] = (byte) (value & 0xFF);
+                    byte[] bytes = new byte[2];
+                    bytes[0] = (byte) ((value >> 8) & 0xFF);
+                    bytes[1] = (byte) (value & 0xFF);
 
-                String highByteBinary = String.format("%8s", Integer.toBinaryString(bytes[0] & 0xFF)).replace(' ', '0');
-                String lowByteBinary = String.format("%8s", Integer.toBinaryString(bytes[1] & 0xFF)).replace(' ', '0');
+                    String highByteBinary = String.format("%8s", Integer.toBinaryString(bytes[0] & 0xFF)).replace(' ', '0');
+                    String lowByteBinary = String.format("%8s", Integer.toBinaryString(bytes[1] & 0xFF)).replace(' ', '0');
 
-                payloadMap.put("value", List.of(value));
-                payloadMap.put("binaryList", List.of(new String[] { highByteBinary, lowByteBinary }));
+                    payloadMap.put("value", List.of(value));
+                    payloadMap.put("binaryList", List.of(new String[] { highByteBinary, lowByteBinary }));
+                }
 
                 Wago750Model wago750Model = new Wago750Model(payloadMap, key);
                 sseService.sendWago750Update(wago750Model);

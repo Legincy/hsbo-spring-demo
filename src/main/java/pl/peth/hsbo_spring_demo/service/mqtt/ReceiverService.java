@@ -21,7 +21,6 @@ public class ReceiverService {
 
     public ReceiverService(MqttConfiguration mqttConfiguration) {
         this.mqttConfiguration = mqttConfiguration;
-        log.info("MQTT broker URL configured: {}", mqttConfiguration.getBrokerUrl());
     }
 
     @Bean

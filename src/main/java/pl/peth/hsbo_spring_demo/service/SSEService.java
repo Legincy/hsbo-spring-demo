@@ -42,7 +42,7 @@ public class SSEService {
         try {
             jsonData = objectMapper.writeValueAsString(wago750Model);
         } catch (JsonProcessingException e) {
-            log.error("Fehler beim Serialisieren von Wago750-Daten: {}", e.getMessage());
+            log.error("Error while converting Wago750Model to JSON: {}", e.getMessage());
             return;
         }
 
@@ -52,7 +52,7 @@ public class SSEService {
                         .name("wago750")
                         .data(jsonData));
             } catch (IOException e) {
-                log.warn("Fehler beim Senden an SSE-Emitter: {}", e.getMessage());
+                log.warn("Error while sending data to emitter: {}", e.getMessage());
                 deadEmitters.add(emitter);
             }
         });
