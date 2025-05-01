@@ -15,7 +15,9 @@ import pl.peth.hsbo_spring_demo.service.S7_1500Service;
 import pl.peth.hsbo_spring_demo.service.SPSDataService;
 import pl.peth.hsbo_spring_demo.service.Wago750Service;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,15 +54,30 @@ public class SPSMessageHandler implements TopicSubscription {
         //spsDataService.save(spsData);
 
         String key = spsDataModel.getKey();
-        Map<String, String> payloadMap = new HashMap<>();
-        payloadMap.put(spsDataModel.getKey(), spsDataModel.getPayload());
+        Map<String, Object> payloadMap = new HashMap<>();
+        payloadMap.put("key", key);
 
         switch (source){
             case "Wago750" -> {
+                String rawValue = spsDataModel.getPayload().replace("[", "").replace("]", "").trim();
+                int value = Integer.parseInt(rawValue);
+
+                byte[] bytes = new byte[2];
+                bytes[0] = (byte) ((value >> 8) & 0xFF);
+                bytes[1] = (byte) (value & 0xFF);
+
+                String highByteBinary = String.format("%8s", Integer.toBinaryString(bytes[0] & 0xFF)).replace(' ', '0');
+                String lowByteBinary = String.format("%8s", Integer.toBinaryString(bytes[1] & 0xFF)).replace(' ', '0');
+
+                payloadMap.put("value", List.of(value));
+                payloadMap.put("binaryList", List.of(new String[] { highByteBinary, lowByteBinary }));
+
                 Wago750Model wago750Model = new Wago750Model(payloadMap, key);
                 wago750Service.save(wago750Model);
             }
             case "S7_1500" -> {
+                payloadMap.put("value", Float.parseFloat(spsDataModel.getPayload()));
+
                 S7_1500Model s7_1500Model = new S7_1500Model(payloadMap, key);
                 s7_1500DataService.save(s7_1500Model);
             }
@@ -68,6 +85,7 @@ public class SPSMessageHandler implements TopicSubscription {
                 if (mqttConfiguration.isIgnoreRandomGenerator()) {
                     return;
                 }
+                payloadMap.put("value", spsDataModel.getPayload());
 
                 RandomModel randomModel = new RandomModel(payloadMap, key);
                 randomService.save(randomModel);

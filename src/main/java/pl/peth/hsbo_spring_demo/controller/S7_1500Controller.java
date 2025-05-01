@@ -25,15 +25,15 @@ public class S7_1500Controller {
     }
 
     @GetMapping
-    public ResponseEntity<List<S7_1500Model>> getAll(@RequestParam Optional<String> key) {
-        List<S7_1500Model> fetchedData = s7_1500Service.findAllByKey(key);
+    public ResponseEntity<List<S7_1500Model>> getAllAdvanced(@RequestParam Optional<String> key, @RequestParam Optional<Integer> limit, @RequestParam Optional<String> sort, @RequestParam Optional<String> order) {
+        List<S7_1500Model> fetchedData = s7_1500Service.findAllByKey(key, limit, sort, order);
 
         return ResponseEntity.ok(fetchedData);
     }
 
     @GetMapping("/latest")
-    public ResponseEntity<S7_1500Model> getLatest() {
-        S7_1500Model fetchedData = s7_1500Service.findFirstByOrderByTimestampDesc();
+    public ResponseEntity<S7_1500Model> getLatest(@RequestParam Optional<String> key) {
+        S7_1500Model fetchedData = s7_1500Service.findLatest(key);
 
         return ResponseEntity.ok(fetchedData);
     }
