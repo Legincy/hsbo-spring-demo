@@ -10,12 +10,8 @@ import pl.peth.hsbo_spring_demo.model.RandomModel;
 import pl.peth.hsbo_spring_demo.model.S7_1500Model;
 import pl.peth.hsbo_spring_demo.model.SPSDataModel;
 import pl.peth.hsbo_spring_demo.model.Wago750Model;
-import pl.peth.hsbo_spring_demo.service.RandomService;
-import pl.peth.hsbo_spring_demo.service.S7_1500Service;
-import pl.peth.hsbo_spring_demo.service.SPSDataService;
-import pl.peth.hsbo_spring_demo.service.Wago750Service;
+import pl.peth.hsbo_spring_demo.service.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +25,7 @@ public class SPSMessageHandler implements TopicSubscription {
     private static final String[] SUBSCRIPTIONS = {
             "Wago750/Status",
             "S7_1500/Temperatur/+",
-            "Random/+"
+            //"Random/+"
     };
 
     private final SPSDataService spsDataService;
@@ -37,13 +33,15 @@ public class SPSMessageHandler implements TopicSubscription {
     private final S7_1500Service s7_1500DataService;
     private final RandomService randomService;
     private final MqttConfiguration mqttConfiguration;
+    private final SSEService sseService;
 
-    public SPSMessageHandler(SPSDataService spsDataService, Wago750Service wago750Service, S7_1500Service s71500DataService, RandomService randomService, MqttConfiguration mqttConfiguration) {
+    public SPSMessageHandler(SPSDataService spsDataService, Wago750Service wago750Service, S7_1500Service s71500DataService, RandomService randomService, MqttConfiguration mqttConfiguration, SSEService sseService) {
         this.spsDataService = spsDataService;
         this.wago750Service = wago750Service;
         s7_1500DataService = s71500DataService;
         this.randomService = randomService;
         this.mqttConfiguration = mqttConfiguration;
+        this.sseService = sseService;
     }
 
     @Override
@@ -73,6 +71,7 @@ public class SPSMessageHandler implements TopicSubscription {
                 payloadMap.put("binaryList", List.of(new String[] { highByteBinary, lowByteBinary }));
 
                 Wago750Model wago750Model = new Wago750Model(payloadMap, key);
+                sseService.sendWago750Update(wago750Model);
                 wago750Service.save(wago750Model);
             }
             case "S7_1500" -> {

@@ -32,8 +32,9 @@ public class ReceiverService {
         options.setServerURIs(new String[]{mqttConfiguration.getBrokerUrl()});
         options.setCleanSession(true);
         options.setAutomaticReconnect(true);
+        options.setMaxInflight(100);
         options.setKeepAliveInterval(30);
-        options.setConnectionTimeout(10);
+        options.setConnectionTimeout(30);
 
         String username = mqttConfiguration.getUsername();
         String password = mqttConfiguration.getPassword();

@@ -5,7 +5,6 @@ import pl.peth.hsbo_spring_demo.model.RandomModel;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Random;
 
 public interface RandomRepository extends MongoRepository<RandomModel, String> {
     RandomModel findFirstByOrderByTimestampDesc();

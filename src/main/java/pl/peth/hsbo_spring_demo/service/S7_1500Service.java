@@ -1,9 +1,7 @@
 package pl.peth.hsbo_spring_demo.service;
 
 import org.springframework.stereotype.Service;
-import pl.peth.hsbo_spring_demo.cache.ModelCache;
 import pl.peth.hsbo_spring_demo.model.S7_1500Model;
-import pl.peth.hsbo_spring_demo.model.Wago750Model;
 import pl.peth.hsbo_spring_demo.repository.S7_1500Repository;
 
 import java.time.Instant;
@@ -13,15 +11,12 @@ import java.util.Optional;
 @Service
 public class S7_1500Service {
     private final S7_1500Repository s7_1500Repository;
-    private final ModelCache<S7_1500Model> s7_1500ModelCache;
 
-    public S7_1500Service(S7_1500Repository s7_1500Repository, ModelCache<S7_1500Model> s71500ModelCache) {
+    public S7_1500Service(S7_1500Repository s7_1500Repository) {
         this.s7_1500Repository = s7_1500Repository;
-        s7_1500ModelCache = s71500ModelCache;
     }
 
     public void save(S7_1500Model data) {
-        s7_1500ModelCache.put(data.getKey(), data);
         s7_1500Repository.save(data);
     }
 
