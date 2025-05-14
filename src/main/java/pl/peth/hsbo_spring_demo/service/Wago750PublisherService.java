@@ -1,5 +1,7 @@
 package pl.peth.hsbo_spring_demo.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.peth.hsbo_spring_demo.dto.MqttMessage;
 import pl.peth.hsbo_spring_demo.service.mqtt.PublisherService;
@@ -9,6 +11,8 @@ import java.util.Map;
 
 @Service
 public class Wago750PublisherService {
+    private static final Logger log = LoggerFactory.getLogger(Wago750PublisherService.class);
+
     private final PublisherService publisherService;
     private final String BASE_TOPIC = "Wago750";
 

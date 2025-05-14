@@ -45,6 +45,14 @@ public class SPSMessageHandler implements TopicSubscription {
         this.sseService = sseService;
     }
 
+    /**
+     * Handles incoming messages from the MQTT broker.
+     *
+     * @param topic   the topic of the incoming message
+     * @param payload the payload of the incoming message
+     * @param message the message object
+     * @throws MessagingException if an error occurs while handling the message
+     */
     @Override
     public void handleMessage(String topic, String payload, Message<?> message) throws MessagingException {
         String source = extractSource(topic);
@@ -100,11 +108,22 @@ public class SPSMessageHandler implements TopicSubscription {
         }
     }
 
+    /**
+     * Returns the list of topics that this handler is responsible for.
+     *
+     * @return an array of topic strings
+     */
     @Override
     public String[] getTargetTopics() {
         return SUBSCRIPTIONS;
     }
 
+    /**
+     * Checks if this handler is responsible for the given topic.
+     *
+     * @param topic the topic to check
+     * @return true if this handler is responsible for the topic, false otherwise
+     */
     @Override
     public boolean isResponsible(String topic) {
         for (String subscription : SUBSCRIPTIONS) {
@@ -115,6 +134,12 @@ public class SPSMessageHandler implements TopicSubscription {
         return false;
     }
 
+    /**
+     * Returns the source of the topic.
+     *
+     * @param topic the topic to extract the source from
+     * @return the source string
+     */
     private String extractSource(String topic) {
         Matcher matcher = SOURCE_PATTERN.matcher(topic);
         if (matcher.matches()) {
@@ -123,6 +148,13 @@ public class SPSMessageHandler implements TopicSubscription {
         return "unknown";
     }
 
+    /**
+     * Checks if the subscription matches the actual topic.
+     *
+     * @param subscription the subscription string
+     * @param actualTopic  the actual topic string
+     * @return true if the subscription matches the actual topic, false otherwise
+     */
     private boolean mqttTopicMatches(String subscription, String actualTopic) {
         if (subscription.equals(actualTopic)) {
             return true;

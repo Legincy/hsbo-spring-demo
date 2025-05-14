@@ -17,6 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service
 public class SSEService {
     private static final Logger log = LoggerFactory.getLogger(SSEService.class);
+
     private final List<SseEmitter> wago750Emitters = new CopyOnWriteArrayList<>();
     private final ObjectMapper objectMapper;
 
@@ -25,16 +26,31 @@ public class SSEService {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * Adds a new SSE emitter to the list of emitters.
+     *
+     * @param emitter the SSE emitter to add
+     */
     public void addWago750Emitter(SseEmitter emitter) {
         wago750Emitters.add(emitter);
         log.info("Added Wago750 SSE-Emitter. Current count: {}", wago750Emitters.size());
     }
 
+    /**
+     * Removes an SSE emitter from the list of emitters.
+     *
+     * @param emitter the SSE emitter to remove
+     */
     public void removeWago750Emitter(SseEmitter emitter) {
         wago750Emitters.remove(emitter);
         log.info("Removed Wago750 SSE-Emitter. Current count: {}", wago750Emitters.size());
     }
 
+    /**
+     * Sends a Wago750Model update to all connected SSE emitters.
+     *
+     * @param wago750Model the Wago750Model to send
+     */
     public void sendWago750Update(Wago750Model wago750Model) {
         List<SseEmitter> deadEmitters = new ArrayList<>();
 

@@ -10,7 +10,6 @@ import pl.peth.hsbo_spring_demo.model.Wago750Model;
 import pl.peth.hsbo_spring_demo.service.SSEService;
 import pl.peth.hsbo_spring_demo.service.Wago750PublisherService;
 import pl.peth.hsbo_spring_demo.service.Wago750Service;
-import pl.peth.hsbo_spring_demo.service.mqtt.PublisherService;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -34,18 +33,36 @@ public class Wago750Controller {
         this.wago750PublisherService = wago750PublisherService;
     }
 
+    /**
+     * Requests all sets from Wago750 repository and returns it as a list.
+     *
+     * @param key
+     * @return ResponseEntity with a list of Wago750Model objects
+     */
     @GetMapping
     public ResponseEntity<List<Wago750Model>> getAll(@RequestParam Optional<String> key) {
         List<Wago750Model> fetchedData = wago750Service.findAllByKey(key);
         return ResponseEntity.ok(fetchedData);
     }
 
+    /**
+     * Requests the latest set from Wago750 repository and returns it as a single object.
+     *
+     * @return ResponseEntity with a Wago750Model object
+     */
     @GetMapping("/latest")
     public ResponseEntity<Wago750Model> getLatest() {
         Wago750Model fetchedData = wago750Service.findFirstByOrderByTimestampDesc();
         return ResponseEntity.ok(fetchedData);
     }
 
+    /**
+     * Requests the latest set from Wago750 repository and returns it as a single object.
+     *
+     * @param start
+     * @param end
+     * @return ResponseEntity with a list of Wago750Model objects
+     */
     @GetMapping("/period")
     public ResponseEntity<List<Wago750Model>> getPeriod(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
@@ -57,12 +74,23 @@ public class Wago750Controller {
         return ResponseEntity.ok(fetchedData);
     }
 
+    /**
+     * Receives a RequestBody with a MqttMessage object and publishes it to the Wago750 device.
+     *
+     * @param body
+     * @return ResponseEntity with a map containing the result of the publish operation
+     */
     @PostMapping("/control")
     public ResponseEntity<Map<String, Object>> postControl(@RequestBody MqttMessage body) {
         Map<String, Object> result = wago750PublisherService.publish(body);
         return ResponseEntity.ok(result);
     }
 
+    /**
+     * Opens a Server-Sent Events (SSE) connection to stream data from the Wago750 device.
+     *
+     * @return SseEmitter object for streaming data
+     */
     @GetMapping(value = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter streamData() {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);

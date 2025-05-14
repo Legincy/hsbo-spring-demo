@@ -1,5 +1,7 @@
 package pl.peth.hsbo_spring_demo.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.peth.hsbo_spring_demo.model.S7_1500Model;
 import pl.peth.hsbo_spring_demo.repository.S7_1500Repository;
@@ -10,6 +12,8 @@ import java.util.Optional;
 
 @Service
 public class S7_1500Service {
+    private static final Logger log = LoggerFactory.getLogger(S7_1500Service.class);
+
     private final S7_1500Repository s7_1500Repository;
 
     public S7_1500Service(S7_1500Repository s7_1500Repository) {

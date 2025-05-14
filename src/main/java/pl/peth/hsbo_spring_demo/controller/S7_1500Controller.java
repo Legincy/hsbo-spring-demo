@@ -21,9 +21,18 @@ public class S7_1500Controller {
     private final S7_1500Service s7_1500Service;
 
     public S7_1500Controller(S7_1500Service s71500Service) {
-        s7_1500Service = s71500Service;
+        this.s7_1500Service = s71500Service;
     }
 
+    /**
+     * Requests all sets from S7-1500 repository and returns it as a list.
+     *
+     * @param key
+     * @param limit
+     * @param sort
+     * @param order
+     * @return ResponseEntity with a list of S7_1500Model objects
+     */
     @GetMapping
     public ResponseEntity<List<S7_1500Model>> getAllAdvanced(@RequestParam Optional<String> key, @RequestParam Optional<Integer> limit, @RequestParam Optional<String> sort, @RequestParam Optional<String> order) {
         List<S7_1500Model> fetchedData = s7_1500Service.findAllByKey(key, limit, sort, order);
@@ -31,6 +40,12 @@ public class S7_1500Controller {
         return ResponseEntity.ok(fetchedData);
     }
 
+    /**
+     * Requests the latest written set from S7-1500 repository and returns it.
+     *
+     * @param key
+     * @return ResponseEntity with a S7_1500Model object
+     */
     @GetMapping("/latest")
     public ResponseEntity<S7_1500Model> getLatest(@RequestParam Optional<String> key) {
         S7_1500Model fetchedData = s7_1500Service.findLatest(key);
@@ -38,6 +53,13 @@ public class S7_1500Controller {
         return ResponseEntity.ok(fetchedData);
     }
 
+    /**
+     * Requests all sets from S7-1500 repository in a given time period and returns it as a list.
+     *
+     * @param start
+     * @param end
+     * @return ResponseEntity with a list of S7_1500Model objects
+     */
     @GetMapping("/period")
     public ResponseEntity<List<S7_1500Model>> getPeriod(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,

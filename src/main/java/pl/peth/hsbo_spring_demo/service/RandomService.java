@@ -1,5 +1,7 @@
 package pl.peth.hsbo_spring_demo.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.peth.hsbo_spring_demo.model.RandomModel;
 import pl.peth.hsbo_spring_demo.repository.RandomRepository;
@@ -9,6 +11,8 @@ import java.util.Optional;
 
 @Service
 public class RandomService {
+    private static final Logger log = LoggerFactory.getLogger(RandomService.class);
+
     private final RandomRepository randomRepository;
 
     public RandomService(RandomRepository randomRepository) {

@@ -15,6 +15,11 @@ public class MessageHandlerRegistry {
 
     private final List<TopicSubscription> messageHandlers = new CopyOnWriteArrayList<>();
 
+    /**
+     * Constructor that initializes the registry with a list of TopicSubscriptions beans.
+     *
+     * @param newMessageHandlers the list of message handlers to register
+     */
     public MessageHandlerRegistry(List<TopicSubscription> newMessageHandlers) {
         messageHandlers.addAll(newMessageHandlers);
 
@@ -43,6 +48,12 @@ public class MessageHandlerRegistry {
         return handlers.toArray(new String[0]);
     }
 
+    /**
+     * Returns a list of message handlers responsible for the given topic.
+     *
+     * @param topic the topic to check
+     * @return a list of message handlers responsible for the given topic
+     */
     public List<TopicSubscription> getHandlersByTopic(String topic) {
         List<TopicSubscription> handlers = new ArrayList<>();
 
@@ -55,6 +66,11 @@ public class MessageHandlerRegistry {
         return handlers;
     }
 
+    /**
+     * Registers a new message handler.
+     *
+     * @param handler the message handler to register
+     */
     public void registerHandler(TopicSubscription handler) {
         if (handler != null && !messageHandlers.contains(handler)) {
             messageHandlers.add(handler);
@@ -64,9 +80,14 @@ public class MessageHandlerRegistry {
         }
     }
 
-    public void unregisterHandler(TopicSubscription handler) {
+    /**
+     * Removes a message handler.
+     *
+     * @param handler the message handler to unregister
+     */
+    public void removeHandler(TopicSubscription handler) {
         if (handler != null && messageHandlers.remove(handler)) {
-            log.debug("Unregistered handler: {}", handler.getClass().getSimpleName());
+            log.debug("Removed handler: {}", handler.getClass().getSimpleName());
         } else {
             log.warn("Handler is null or not registered: {}", handler);
         }

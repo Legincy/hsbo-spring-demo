@@ -28,6 +28,12 @@ public class PublisherService {
         this.mqttOutboundHandler.start();
     }
 
+    /**
+     * Publishes a message to the specified MQTT topic.
+     * @param topic
+     * @param payload
+     * @throws RuntimeException if the message could not be published
+     */
     public void publish(String topic, String payload) {
         log.debug("Publishing to topic {}: {}", topic, payload);
         Message<String> message = MessageBuilder
@@ -43,6 +49,13 @@ public class PublisherService {
         }
     }
 
+    /**
+     * Publishes a message to the specified MQTT topic with the given QoS level.
+     * @param topic
+     * @param payload
+     * @param qos
+     * @throws RuntimeException if the message could not be published
+     */
     public void publish(String topic, String payload, int qos) {
         log.debug("Publishing to topic {} with QoS {}: {}", topic, qos, payload);
         Message<String> message = MessageBuilder

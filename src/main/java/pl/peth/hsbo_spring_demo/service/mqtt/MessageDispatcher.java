@@ -21,6 +21,12 @@ public class MessageDispatcher implements MessageHandler {
         this.messageHandlerRegistry = messageHandlerRegistry;
     }
 
+    /**
+     * Overrides the default handler and manages incoming messages by dispatching them to the appropriate message handlers based on the topic.
+     *
+     * @param message the incoming message
+     * @throws MessagingException if an error occurs while handling the message
+     */
     @Override
     public void handleMessage(Message<?> message) throws MessagingException {
         String topic = Objects.requireNonNull(message.getHeaders().get("mqtt_receivedTopic")).toString();
@@ -28,13 +34,13 @@ public class MessageDispatcher implements MessageHandler {
 
         List<TopicSubscription> handlers = messageHandlerRegistry.getHandlersByTopic(topic);
 
-        if (!handlers.isEmpty()) {
-            for (TopicSubscription handler : handlers) {
-                try {
-                    handler.handleMessage(topic, payload, message);
-                } catch (MessagingException e) {
-                    log.error("Error handling message with handler {}: {}", handler.getClass().getSimpleName(), e.getMessage());
-                }
+        if (!handlers.isEmpty()) return;
+
+        for (TopicSubscription handler : handlers) {
+            try {
+                handler.handleMessage(topic, payload, message);
+            } catch (MessagingException e) {
+                log.error("Error handling message with handler {}: {}", handler.getClass().getSimpleName(), e.getMessage());
             }
         }
     }

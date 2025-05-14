@@ -1,5 +1,7 @@
 package pl.peth.hsbo_spring_demo.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.peth.hsbo_spring_demo.model.SPSDataModel;
 import pl.peth.hsbo_spring_demo.repository.SPSDataRepository;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Service
 public class SPSDataService {
+    private static final Logger log = LoggerFactory.getLogger(SPSDataService.class);
+
     private final SPSDataRepository spsDataRepository;
 
     public SPSDataService(SPSDataRepository spsDataRepository) {

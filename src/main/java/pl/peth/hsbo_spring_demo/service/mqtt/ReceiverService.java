@@ -51,11 +51,22 @@ public class ReceiverService {
         return factory;
     }
 
+    /**
+     * Returns a MessageChannel for handling incoming MQTT messages.
+     *
+     * @return MessageChannel
+     */
     @Bean
     public MessageChannel mqttInputChannel() {
         return new DirectChannel();
     }
 
+
+    /**
+     * Returns either the configured clientId with an additional random ID if clientId ends with a dash, or returns a new random clientId with the format "mqtt-client-[UUID]".
+     *
+     * @return the client ID
+     */
     @Bean
     public String getClientId() {
         String clientId = mqttConfiguration.getClientId();

@@ -1,5 +1,7 @@
 package pl.peth.hsbo_spring_demo.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.peth.hsbo_spring_demo.model.Wago750Model;
 import pl.peth.hsbo_spring_demo.repository.Wago750Repository;
@@ -10,6 +12,8 @@ import java.util.Optional;
 
 @Service
 public class Wago750Service {
+    private static final Logger log = LoggerFactory.getLogger(Wago750Service.class);
+
     private final Wago750Repository wago750Repository;
     private final List<Wago750Model> batchBuffer = new ArrayList<>();
     private final int batchSize = 1024;
