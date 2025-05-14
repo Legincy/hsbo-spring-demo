@@ -23,6 +23,11 @@ public class ReceiverService {
         this.mqttConfiguration = mqttConfiguration;
     }
 
+    /**
+     * Creates a bean for the MQTT client factory.
+     *
+     * @return the MQTT client factory
+     */
     @Bean
     public MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();

@@ -39,7 +39,7 @@ public class SPSMessageHandler implements TopicSubscription {
     public SPSMessageHandler(SPSDataService spsDataService, Wago750Service wago750Service, S7_1500Service s71500DataService, RandomService randomService, MqttConfiguration mqttConfiguration, SSEService sseService) {
         this.spsDataService = spsDataService;
         this.wago750Service = wago750Service;
-        s7_1500DataService = s71500DataService;
+        this.s7_1500DataService = s71500DataService;
         this.randomService = randomService;
         this.mqttConfiguration = mqttConfiguration;
         this.sseService = sseService;

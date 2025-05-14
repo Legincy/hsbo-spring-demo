@@ -7,10 +7,10 @@ import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import pl.peth.hsbo_spring_demo.config.MqttConfiguration;
 
-@Service
+@Component
 public class PublisherService {
     private static final Logger log = LoggerFactory.getLogger(PublisherService.class);
 

@@ -2,29 +2,32 @@ package pl.peth.hsbo_spring_demo.service.mqtt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import pl.peth.hsbo_spring_demo.handler.mqtt.TopicSubscription;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@Service
+@Component
 public class MessageHandlerRegistry {
     private static final Logger log = LoggerFactory.getLogger(MessageHandlerRegistry.class);
 
     private final List<TopicSubscription> messageHandlers = new CopyOnWriteArrayList<>();
 
     public MessageHandlerRegistry(List<TopicSubscription> newMessageHandlers) {
-        if (newMessageHandlers != null) {
-            messageHandlers.addAll(newMessageHandlers);
+        messageHandlers.addAll(newMessageHandlers);
 
-            for (TopicSubscription handler : messageHandlers) {
-                log.debug("Registered handler: {}", handler.getClass().getSimpleName());
-            }
+        for (TopicSubscription handler : messageHandlers) {
+            log.debug("Registered handler: {}", handler.getClass().getSimpleName());
         }
     }
 
+    /**
+     * Returns all registered message handlers.
+     *
+     * @return an array of all registered message handlers
+     */
     public String[] getAllHandlers() {
         List<String> handlers = new ArrayList<>();
 

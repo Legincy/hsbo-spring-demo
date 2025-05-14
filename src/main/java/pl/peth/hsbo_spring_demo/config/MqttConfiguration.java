@@ -68,7 +68,7 @@ public class MqttConfiguration {
     }
 
     /**
-     * Returns the broker URL in the format "tcp://<host>:<port>".
+     * Returns the broker URL in the format "tcp://[HOST]:[PORT]".
      *
      * @return the broker URL
      */

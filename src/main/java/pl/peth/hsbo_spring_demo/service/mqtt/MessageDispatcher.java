@@ -1,4 +1,4 @@
-package pl.peth.hsbo_spring_demo.handler;
+package pl.peth.hsbo_spring_demo.service.mqtt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,18 +7,17 @@ import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Component;
 import pl.peth.hsbo_spring_demo.handler.mqtt.TopicSubscription;
-import pl.peth.hsbo_spring_demo.service.mqtt.MessageHandlerRegistry;
 
 import java.util.List;
 import java.util.Objects;
 
 @Component
-public class MqttMessageDispatcher implements MessageHandler {
-    private static final Logger log = LoggerFactory.getLogger(MqttMessageDispatcher.class);
+public class MessageDispatcher implements MessageHandler {
+    private static final Logger log = LoggerFactory.getLogger(MessageDispatcher.class);
 
     private final MessageHandlerRegistry messageHandlerRegistry;
 
-    public MqttMessageDispatcher(MessageHandlerRegistry messageHandlerRegistry) {
+    public MessageDispatcher(MessageHandlerRegistry messageHandlerRegistry) {
         this.messageHandlerRegistry = messageHandlerRegistry;
     }
 

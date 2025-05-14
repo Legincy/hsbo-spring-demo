@@ -37,17 +37,30 @@ public class SubscriptionService implements ApplicationListener<ContextRefreshed
         this.mqttInputChannel = mqttInputChannel;
     }
 
+    /**
+     * Initializes the MQTT adapter and subscribes to all registered topics when the application context is refreshed.
+     *
+     * @param event the context refreshed event
+     */
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         initAdapter();
         subscribeAllRegisteredTopics();
     }
 
+    /**
+     * Checks if the application supports asynchronous execution.
+     *
+     * @return true if asynchronous execution is supported, false otherwise
+     */
     @Override
     public boolean supportsAsyncExecution() {
         return ApplicationListener.super.supportsAsyncExecution();
     }
 
+    /**
+     * Initializes the MQTT adapter for receiving messages.
+     */
     private void initAdapter() {
         String clientId = mqttReceiverService.getClientId();
 
@@ -70,6 +83,9 @@ public class SubscriptionService implements ApplicationListener<ContextRefreshed
         }
     }
 
+    /**
+     * Subscribes to all known topics registered in the message handler registry.
+     */
     public void subscribeAllRegisteredTopics() {
         String[] topics = messageHandlerRegistry.getAllHandlers();
 
@@ -82,26 +98,44 @@ public class SubscriptionService implements ApplicationListener<ContextRefreshed
         }
     }
 
-    public boolean subscribe(String topic) {
+    /**
+     * Subscribes to a specific topic with the default QoS.
+     *
+     * @param topic the topic to subscribe to
+     */
+    public void subscribe(String topic) {
+        subscribe(topic, mqttConfiguration.getQualityOfService());
+    }
+
+    /**
+     * Subscribes to a specific topic with the specified QoS.
+     *
+     * @param topic the topic to subscribe to
+     * @param qos   the quality of service level
+     */
+    public void subscribe(String topic, int qos) {
        if (adapter == null) {
            log.error("Adapter is not initialized");
-           return false;
+           return;
        }
 
        if (!isTopicAlreadySubscribed(topic)) {
             try {
-                adapter.addTopic(topic, mqttConfiguration.getQualityOfService());
-                return true;
+                adapter.addTopic(topic, qos);
             } catch (Exception e) {
                 log.error("Failed to subscribe to topic: {}", topic, e);
-                return false;
             }
        }
 
         log.warn("Topic {} is already subscribed", topic);
-        return true;
     }
 
+    /**
+     * Checks if the specified topic is already subscribed.
+     *
+     * @param topic
+     * @return true if the topic is already subscribed, false otherwise
+     */
     public boolean isTopicAlreadySubscribed(String topic) {
         if (adapter == null) {
             log.error("Adapter not initialized");
@@ -111,14 +145,19 @@ public class SubscriptionService implements ApplicationListener<ContextRefreshed
         return subscriptions.containsKey(topic);
     }
 
+    /**
+     * Cleans up the MQTT adapter when the application context is destroyed.
+     */
     @PreDestroy
     public void cleanup() {
-        if (adapter != null) {
-            try {
-                adapter.stop();
-            } catch (Exception e) {
-                log.error("Failed to stop MQTT adapter", e);
-            }
+        if (adapter == null){
+            return;
+        }
+
+        try {
+            adapter.stop();
+        } catch (Exception e) {
+            log.error("Failed to stop MQTT adapter", e);
         }
     }
 }

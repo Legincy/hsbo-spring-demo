@@ -30,7 +30,7 @@ public class S7_1500Service {
 
     public S7_1500Model findLatest(Optional<String> key) {
         if (key.isEmpty()) {
-            s7_1500Repository.findFirstByOrderByTimestampDesc();
+            return s7_1500Repository.findFirstByOrderByTimestampDesc();
         }
 
         return s7_1500Repository.findFirstByKeyOrderByTimestampDesc(key.get());
