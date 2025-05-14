@@ -85,7 +85,7 @@ public class SPSMessageHandler implements TopicSubscription {
                 }
 
                 Wago750Model wago750Model = new Wago750Model(payloadMap, key);
-                sseService.sendUpdate(wago750Model);
+                sseService.sendUpdate("wago750", "data", wago750Model);
                 wago750Service.save(wago750Model);
             }
             case "S7_1500" -> {

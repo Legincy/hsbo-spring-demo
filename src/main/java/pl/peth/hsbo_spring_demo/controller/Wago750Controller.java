@@ -91,16 +91,8 @@ public class Wago750Controller {
      *
      * @return SseEmitter object for streaming data
      */
-    @GetMapping(value = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter streamData() {
-        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-
-        sseService.addEmitter(emitter);
-
-        emitter.onCompletion(() -> sseService.removeEmitter(emitter));
-        emitter.onTimeout(() -> sseService.removeEmitter(emitter));
-        emitter.onError((Throwable t) -> sseService.removeEmitter(emitter));
-
-        return emitter;
+        return sseService.createEmitter("wago750");
     }
 }
