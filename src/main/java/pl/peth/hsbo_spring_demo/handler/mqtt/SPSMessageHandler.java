@@ -15,7 +15,6 @@ import pl.peth.hsbo_spring_demo.service.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,7 +85,7 @@ public class SPSMessageHandler implements TopicSubscription {
                 }
 
                 Wago750Model wago750Model = new Wago750Model(payloadMap, key);
-                sseService.sendWago750Update(wago750Model);
+                sseService.sendUpdate(wago750Model);
                 wago750Service.save(wago750Model);
             }
             case "S7_1500" -> {

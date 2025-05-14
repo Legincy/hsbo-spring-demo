@@ -31,7 +31,7 @@ public class SSEService {
      *
      * @param emitter the SSE emitter to add
      */
-    public void addWago750Emitter(SseEmitter emitter) {
+    public void addEmitter(SseEmitter emitter) {
         wago750Emitters.add(emitter);
         log.info("Added Wago750 SSE-Emitter. Current count: {}", wago750Emitters.size());
     }
@@ -41,24 +41,24 @@ public class SSEService {
      *
      * @param emitter the SSE emitter to remove
      */
-    public void removeWago750Emitter(SseEmitter emitter) {
+    public void removeEmitter(SseEmitter emitter) {
         wago750Emitters.remove(emitter);
         log.info("Removed Wago750 SSE-Emitter. Current count: {}", wago750Emitters.size());
     }
 
     /**
-     * Sends a Wago750Model update to all connected SSE emitters.
+     * Sends a Model update to all connected SSE emitters.
      *
      * @param wago750Model the Wago750Model to send
      */
-    public void sendWago750Update(Wago750Model wago750Model) {
+    public void sendUpdate(Wago750Model wago750Model) {
         List<SseEmitter> deadEmitters = new ArrayList<>();
 
         String jsonData;
         try {
             jsonData = objectMapper.writeValueAsString(wago750Model);
         } catch (JsonProcessingException e) {
-            log.error("Error while converting Wago750Model to JSON: {}", e.getMessage());
+            log.error("Error while converting Model to JSON: {}", e.getMessage());
             return;
         }
 
@@ -67,12 +67,18 @@ public class SSEService {
                 emitter.send(SseEmitter.event()
                         .name("wago750")
                         .data(jsonData));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.warn("Error while sending data to emitter: {}", e.getMessage());
                 deadEmitters.add(emitter);
+                try {
+                    emitter.complete();
+                } catch (Exception ex) {
+                    //
+                }
             }
         });
 
+        if (deadEmitters.isEmpty()) return;
         wago750Emitters.removeAll(deadEmitters);
     }
 }

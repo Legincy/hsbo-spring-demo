@@ -95,11 +95,11 @@ public class Wago750Controller {
     public SseEmitter streamData() {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
 
-        sseService.addWago750Emitter(emitter);
+        sseService.addEmitter(emitter);
 
-        emitter.onCompletion(() -> sseService.removeWago750Emitter(emitter));
-        emitter.onTimeout(() -> sseService.removeWago750Emitter(emitter));
-        emitter.onError((Throwable t) -> sseService.removeWago750Emitter(emitter));
+        emitter.onCompletion(() -> sseService.removeEmitter(emitter));
+        emitter.onTimeout(() -> sseService.removeEmitter(emitter));
+        emitter.onError((Throwable t) -> sseService.removeEmitter(emitter));
 
         return emitter;
     }
