@@ -34,7 +34,7 @@ public class MessageDispatcher implements MessageHandler {
 
         List<TopicSubscription> handlers = messageHandlerRegistry.getHandlersByTopic(topic);
 
-        if (!handlers.isEmpty()) return;
+        if (handlers.isEmpty()) return;
 
         for (TopicSubscription handler : handlers) {
             try {
