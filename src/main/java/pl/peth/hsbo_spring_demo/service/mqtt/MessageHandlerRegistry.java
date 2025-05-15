@@ -65,31 +65,4 @@ public class MessageHandlerRegistry {
 
         return handlers;
     }
-
-    /**
-     * Registers a new message handler.
-     *
-     * @param handler the message handler to register
-     */
-    public void registerHandler(TopicSubscription handler) {
-        if (handler != null && !messageHandlers.contains(handler)) {
-            messageHandlers.add(handler);
-            log.debug("Registered handler: {}", handler.getClass().getSimpleName());
-        } else {
-            log.warn("Handler is null or already registered: {}", handler);
-        }
-    }
-
-    /**
-     * Removes a message handler.
-     *
-     * @param handler the message handler to unregister
-     */
-    public void removeHandler(TopicSubscription handler) {
-        if (handler != null && messageHandlers.remove(handler)) {
-            log.debug("Removed handler: {}", handler.getClass().getSimpleName());
-        } else {
-            log.warn("Handler is null or not registered: {}", handler);
-        }
-    }
 }

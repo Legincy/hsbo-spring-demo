@@ -65,7 +65,7 @@ public class SubscriptionService implements ApplicationListener<ContextRefreshed
         String clientId = mqttReceiverService.getClientId();
 
         adapter = new MqttPahoMessageDrivenChannelAdapter(
-                clientId + "receiver",
+                clientId + "-receiver",
                 mqttReceiverService.mqttClientFactory(),
                 new String[0]
         );
@@ -119,15 +119,16 @@ public class SubscriptionService implements ApplicationListener<ContextRefreshed
            return;
        }
 
-       if (!isTopicAlreadySubscribed(topic)) {
-            try {
-                adapter.addTopic(topic, qos);
-            } catch (Exception e) {
-                log.error("Failed to subscribe to topic: {}", topic, e);
-            }
+       if (isTopicAlreadySubscribed(topic)) {
+           log.warn("Topic {} is already subscribed", topic);
+           return;
        }
 
-        log.warn("Topic {} is already subscribed", topic);
+        try {
+            adapter.addTopic(topic, qos);
+        } catch (Exception e) {
+            log.error("Failed to subscribe to topic: {}", topic, e);
+        }
     }
 
     /**
