@@ -34,14 +34,16 @@ public class SPSMessageHandler implements TopicSubscription {
     private final RandomService randomService;
     private final MqttConfiguration mqttConfiguration;
     private final SSEService sseService;
+    private final MetricsService metricsService;
 
-    public SPSMessageHandler(SPSDataService spsDataService, Wago750Service wago750Service, S7_1500Service s71500DataService, RandomService randomService, MqttConfiguration mqttConfiguration, SSEService sseService) {
+    public SPSMessageHandler(SPSDataService spsDataService, Wago750Service wago750Service, S7_1500Service s71500DataService, RandomService randomService, MqttConfiguration mqttConfiguration, SSEService sseService, MetricsService metricsService) {
         this.spsDataService = spsDataService;
         this.wago750Service = wago750Service;
         this.s7_1500DataService = s71500DataService;
         this.randomService = randomService;
         this.mqttConfiguration = mqttConfiguration;
         this.sseService = sseService;
+        this.metricsService = metricsService;
     }
 
     /**
@@ -54,6 +56,9 @@ public class SPSMessageHandler implements TopicSubscription {
      */
     @Override
     public void handleMessage(String topic, String payload, Message<?> message) throws MessagingException {
+        long now = System.currentTimeMillis();
+        metricsService.incrementMqttMessageCount(topic);
+
         String source = extractSource(topic);
 
         SPSDataModel spsDataModel = new SPSDataModel(source, topic, payload);
@@ -105,6 +110,9 @@ public class SPSMessageHandler implements TopicSubscription {
             }
             default -> log.warn("Unknown source: {}", source);
         }
+
+        long processingTime = System.currentTimeMillis() - now;
+        metricsService.recordMqttMessageProcessingTime(topic, processingTime);
     }
 
     /**
