@@ -20,6 +20,30 @@ services:
     networks:
       - default
 
+  influx:
+    image: influxdb:latest
+    container_name: hsbo-spring-demo-influx
+    env_file:
+      - .env
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./data/influx/data:/var/lib/influxdb2
+      - ./data/influx/config:/etc/influxdb2
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: hsbo-spring-demo-grafana
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+    depends_on:
+      - influxdb
+
   mosquitto:
     image: eclipse-mosquitto:latest
     container_name: hsbo-spring-demo-mosquitto

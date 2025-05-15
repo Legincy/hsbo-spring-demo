@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.peth.hsbo_spring_demo.model.Wago750Model;
 import pl.peth.hsbo_spring_demo.repository.Wago750Repository;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +17,7 @@ public class Wago750Service {
 
     private final Wago750Repository wago750Repository;
     private final List<Wago750Model> batchBuffer = new ArrayList<>();
-    private final int batchSize = 1024;
+    private final int batchSize = 8;
 
     public Wago750Service(Wago750Repository wago750Repository) {
         this.wago750Repository = wago750Repository;
@@ -27,28 +28,61 @@ public class Wago750Service {
             batchBuffer.add(data);
 
             if (batchBuffer.size() >= batchSize) {
+                Instant now = Instant.now();
                 wago750Repository.saveAll(batchBuffer);
+
+                log.debug("Saved {} records to Wago750 repository in {} ms", batchBuffer.size(), (Instant.now().toEpochMilli() - now.toEpochMilli()));
+
                 batchBuffer.clear();
             }
         }
     }
 
     public List<Wago750Model> findAllByKey(Optional<String> key) {
+        Instant now = Instant.now();
+        List<Wago750Model> result = new ArrayList<>();
+
         if (key.isEmpty()) {
-            return wago750Repository.findAll();
+            result = wago750Repository.findAll();
+
+            log.debug("Fetched {} records from Wago750 repository in {} ms", result.size(), (Instant.now().toEpochMilli() - now.toEpochMilli()));
+
+            return result;
         }
 
-        return wago750Repository.findAllByKey(key.get());
+        result = wago750Repository.findAllByKey(key.get());
+
+        log.debug("Fetched {} records from Wago750 repository in {} ms", result.size(), (Instant.now().toEpochMilli() - now.toEpochMilli()));
+
+        return result;
     }
 
     public Wago750Model findFirstByOrderByTimestampDesc() {
+        Wago750Model result;
+        Instant now = Instant.now();
+
         if (!batchBuffer.isEmpty()) {
-            return batchBuffer.getLast();
+            result = batchBuffer.getLast();
+
+            log.debug("Fetched latest record from Wago750 buffer in {} ms", (Instant.now().toEpochMilli() - now.toEpochMilli()));
+            return result;
         }
-        return wago750Repository.findFirstByOrderByTimestampDesc();
+
+        result = wago750Repository.findFirstByOrderByTimestampDesc();
+
+        log.debug("Fetched latest record from Wago750 repository in {} ms", (Instant.now().toEpochMilli() - now.toEpochMilli()));
+
+        return result;
     }
 
     public List<Wago750Model> findByTimestampBetween(java.time.Instant startInstant, java.time.Instant endInstant) {
-        return wago750Repository.findByTimestampBetween(startInstant, endInstant);
+        Instant now = Instant.now();
+        List<Wago750Model> result = new ArrayList<>();
+
+        result = wago750Repository.findByTimestampBetween(startInstant, endInstant);
+
+        log.debug("Fetched {} records from Wago750 repository in {} ms", result.size(), (Instant.now().toEpochMilli() - now.toEpochMilli()));
+
+        return result;
     }
 }
