@@ -42,7 +42,7 @@ services:
     volumes:
       - ./data/grafana:/var/lib/grafana
     depends_on:
-      - influxdb
+      - influx
 
   mosquitto:
     image: eclipse-mosquitto:latest
