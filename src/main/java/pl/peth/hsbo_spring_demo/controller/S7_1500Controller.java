@@ -27,7 +27,7 @@ public class S7_1500Controller {
     public S7_1500Controller(S7_1500Service s71500Service) {
         this.s7_1500Service = s71500Service;
 
-        log.debug("S7-1500Controller initialized");
+        log.info("Added S7_1500Controller to the application context");
     }
 
     /**
@@ -47,7 +47,7 @@ public class S7_1500Controller {
         return ResponseEntity.ok(fetchedData);
     }
 
-    /**
+    /*
      * Requests the latest written set from S7-1500 repository and returns it.
      *
      * @param key

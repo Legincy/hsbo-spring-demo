@@ -34,7 +34,7 @@ public class Wago750Controller {
         this.sseService = sseService;
         this.wago750PublisherService = wago750PublisherService;
 
-        log.debug("Wago750Controller initialized");
+        log.info("Added Wago750Controller to the application context");
     }
 
     /**
