@@ -25,16 +25,15 @@ public class Wago750Service {
 
     public void save(Wago750Model data) {
         synchronized (batchBuffer) {
+            Instant now = Instant.now();
             batchBuffer.add(data);
 
             if (batchBuffer.size() >= batchSize) {
-                Instant now = Instant.now();
-                wago750Repository.saveAll(batchBuffer);
-
-                log.debug("Saved {} records to Wago750 repository in {} ms", batchBuffer.size(), (Instant.now().toEpochMilli() - now.toEpochMilli()));
-
                 batchBuffer.clear();
             }
+
+            wago750Repository.save(data);
+            log.debug("Saved record to Wago750 repository in {} ms", (Instant.now().toEpochMilli() - now.toEpochMilli()));
         }
     }
 
