@@ -60,7 +60,7 @@ public class SPSMessageHandlerTest {
 
         Message<String> message = new GenericMessage<>(payload, headers);
 
-        spsMessageHandler.handleMessage(topic, payload, message);
+        spsMessageHandler.handleMessage(message);
 
         verify(s7_1500Service, times(1)).save(s7_1500ModelCaptor.capture());
 

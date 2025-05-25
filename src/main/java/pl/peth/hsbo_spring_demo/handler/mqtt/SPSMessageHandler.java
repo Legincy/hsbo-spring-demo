@@ -53,12 +53,11 @@ public class SPSMessageHandler implements TopicSubscription {
         this.environment = environment;
     }
 
-    /**
-     * Handles incoming messages from the MQTT broker with improved error handling.
-     */
     @Override
-    public void handleMessage(String topic, String payload, Message<?> message) throws MessagingException {
+    public void handleMessage(Message<?> message) throws MessagingException {
         long now = System.currentTimeMillis();
+        String topic = (String) message.getHeaders().get("mqtt_receivedTopic");
+        String payload = (String) message.getPayload();
 
         try {
             metricsService.incrementMqttMessageCount(topic);

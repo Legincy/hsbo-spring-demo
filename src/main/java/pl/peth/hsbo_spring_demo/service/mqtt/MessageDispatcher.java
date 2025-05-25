@@ -30,7 +30,6 @@ public class MessageDispatcher implements MessageHandler {
     @Override
     public void handleMessage(Message<?> message) throws MessagingException {
         String topic = Objects.requireNonNull(message.getHeaders().get("mqtt_receivedTopic")).toString();
-        String payload = message.getPayload().toString();
 
         List<TopicSubscription> handlers = messageHandlerRegistry.getHandlersByTopic(topic);
 
@@ -38,7 +37,7 @@ public class MessageDispatcher implements MessageHandler {
 
         for (TopicSubscription handler : handlers) {
             try {
-                handler.handleMessage(topic, payload, message);
+                handler.handleMessage(message);
             } catch (MessagingException e) {
                 log.error("Error handling message with handler {}: {}", handler.getClass().getSimpleName(), e.getMessage());
             }
