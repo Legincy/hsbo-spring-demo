@@ -53,6 +53,14 @@ public class SPSMessageHandler implements TopicSubscription {
         this.environment = environment;
     }
 
+
+    /**
+     * Handles incoming MQTT messages, processes them based on the source and key,
+     * and saves the data to the appropriate service.
+     *
+     * @param message the incoming MQTT message
+     * @throws MessagingException if an error occurs while processing the message
+     */
     @Override
     public void handleMessage(Message<?> message) throws MessagingException {
         long now = System.currentTimeMillis();
@@ -87,6 +95,14 @@ public class SPSMessageHandler implements TopicSubscription {
         }
     }
 
+    /**
+     * Handles messages from the Wago750 source, processes the payload,
+     * and saves the data to the Wago750 service.
+     *
+     * @param spsDataModel the SPS data model containing the message details
+     * @param key          the key extracted from the topic
+     * @param payloadMap   a map to hold processed payload data
+     */
     private void handleWago750Message(SPSDataModel spsDataModel, String key, Map<String, Object> payloadMap) {
         try {
             if(key.equals("Control")){
@@ -129,6 +145,14 @@ public class SPSMessageHandler implements TopicSubscription {
         }
     }
 
+    /**
+     * Handles messages from the S7_1500 source, processes the payload,
+     * and saves the data to the S7_1500 service.
+     *
+     * @param spsDataModel the SPS data model containing the message details
+     * @param key          the key extracted from the topic
+     * @param payloadMap   a map to hold processed payload data
+     */
     private void handleS7_1500Message(SPSDataModel spsDataModel, String key, Map<String, Object> payloadMap) {
         try {
             payloadMap.put("value", Float.parseFloat(spsDataModel.getPayload()));
@@ -147,6 +171,14 @@ public class SPSMessageHandler implements TopicSubscription {
         }
     }
 
+    /**
+     * Handles messages from the Random source, processes the payload,
+     * and saves the data to the Random service if configured to do so.
+     *
+     * @param spsDataModel the SPS data model containing the message details
+     * @param key          the key extracted from the topic
+     * @param payloadMap   a map to hold processed payload data
+     */
     private void handleRandomMessage(SPSDataModel spsDataModel, String key, Map<String, Object> payloadMap) {
         if (mqttConfiguration.isIgnoreRandomGenerator()) {
             return;
@@ -165,15 +197,31 @@ public class SPSMessageHandler implements TopicSubscription {
         }
     }
 
+    /**
+     * Checks if the application is running in a test environment.
+     *
+     * @return true if the active profile is "test", false otherwise
+     */
     private boolean isTestEnvironment() {
         return Arrays.asList(environment.getActiveProfiles()).contains("test");
     }
 
+    /**
+     * Returns the MQTT topics that this handler is subscribed to.
+     *
+     * @return an array of topic strings
+     */
     @Override
     public String[] getTargetTopics() {
         return SUBSCRIPTIONS;
     }
 
+    /**
+     * Checks if this handler is responsible for processing messages from the given topic.
+     *
+     * @param topic the MQTT topic to check
+     * @return true if the topic matches one of the subscriptions, false otherwise
+     */
     @Override
     public boolean isResponsible(String topic) {
         for (String subscription : SUBSCRIPTIONS) {
@@ -184,6 +232,12 @@ public class SPSMessageHandler implements TopicSubscription {
         return false;
     }
 
+    /**
+     * Extracts the source from the MQTT topic using a regex pattern.
+     *
+     * @param topic the MQTT topic string
+     * @return the extracted source, or "unknown" if no match is found
+     */
     private String extractSource(String topic) {
         Matcher matcher = SOURCE_PATTERN.matcher(topic);
         if (matcher.matches()) {
@@ -192,6 +246,13 @@ public class SPSMessageHandler implements TopicSubscription {
         return "unknown";
     }
 
+    /**
+     * Checks if the MQTT topic matches the subscription pattern.
+     *
+     * @param subscription the subscription pattern
+     * @param actualTopic  the actual MQTT topic
+     * @return true if the topic matches the subscription, false otherwise
+     */
     private boolean mqttTopicMatches(String subscription, String actualTopic) {
         if (subscription.equals(actualTopic)) {
             return true;

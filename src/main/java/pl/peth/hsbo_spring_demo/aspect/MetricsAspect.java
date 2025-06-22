@@ -16,6 +16,14 @@ public class MetricsAspect {
         this.metricsService = metricsService;
     }
 
+    /**
+     * Aspect to measure the execution time of API calls in classes annotated with @RestController.
+     * It uses Micrometer Timer to record the duration and count of API calls.
+     *
+     * @param joinPoint the join point representing the method execution
+     * @return the result of the method execution
+     * @throws Throwable if any error occurs during method execution
+     */
     @Around("@within(org.springframework.web.bind.annotation.RestController)")
     public Object measureApiCalls(ProceedingJoinPoint joinPoint) throws Throwable {
         String methodName = joinPoint.getSignature().getName();

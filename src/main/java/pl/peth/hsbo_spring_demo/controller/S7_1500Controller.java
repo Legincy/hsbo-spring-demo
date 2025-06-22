@@ -47,7 +47,7 @@ public class S7_1500Controller {
         return ResponseEntity.ok(fetchedData);
     }
 
-    /*
+    /**
      * Requests the latest written set from S7-1500 repository and returns it.
      *
      * @param key
