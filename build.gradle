@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.4'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco'
 }
 
 group = 'pl.peth'
@@ -39,4 +40,64 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jacoco {
+	toolVersion = "0.8.9"
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
+		html.required = true
+		csv.required = false
+	}
+
+	// Ausschluss von Klassen die nicht getestet werden sollen
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'**/HsboSpringDemoApplication.class',
+					'**/config/**',
+					'**/dto/**',
+					'**/model/**'
+			])
+		}))
+	}
+}
+
+jacocoTestCoverageVerification {
+	dependsOn jacocoTestReport
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.70
+			}
+		}
+		rule {
+			enabled = true
+			element = 'CLASS'
+			excludes = [
+					'pl.peth.hsbo_spring_demo.HsboSpringDemoApplication',
+					'pl.peth.hsbo_spring_demo.config.*',
+					'pl.peth.hsbo_spring_demo.dto.*',
+					'pl.peth.hsbo_spring_demo.model.*'
+			]
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.60
+			}
+		}
+	}
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+check {
+	dependsOn jacocoTestCoverageVerification
 }
